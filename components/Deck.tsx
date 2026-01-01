@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Waveform } from './Waveform';
 import { DeckControls } from '../hooks/useAudioDeck';
-import { Play, Pause, Upload, Disc } from 'lucide-react';
+import { Play, Pause, Upload } from 'lucide-react';
 
 interface DeckProps {
   id: 'A' | 'B';
@@ -24,6 +24,10 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   // Constants
   const SECONDS_PER_REVOLUTION = 1.8;
   const currentRotation = (controls.currentTime / SECONDS_PER_REVOLUTION) * 360;
+  
+  // PITCH RANGE CONFIGURATION
+  // 0.08 means +/- 8% range (Standard DJ pitch range)
+  const PITCH_RANGE = 0.08; 
 
   // Timer for CUE button logic
   const cueTimerRef = useRef<number | null>(null);
@@ -106,10 +110,14 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
     let normalized = relativeY / rect.height;
     normalized = Math.max(0, Math.min(1, normalized));
     
-    // Invert logic: Top (0) = Fast (1.5), Bottom (1) = Slow (0.5)
-    const newRate = 1.5 - normalized;
+    // Logic Update: Use PITCH_RANGE
+    // Top (0) = 1 + PITCH_RANGE (Fastest)
+    // Bottom (1) = 1 - PITCH_RANGE (Slowest)
+    const rangeSpan = PITCH_RANGE * 2;
+    const newRate = (1 + PITCH_RANGE) - (normalized * rangeSpan);
+
     controls.setPlaybackRate(newRate);
-  }, [controls]);
+  }, [controls, PITCH_RANGE]);
 
   useEffect(() => {
     if (isTempoDragging) {
@@ -166,8 +174,7 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
     const now = Date.now();
     const times = tapTimesRef.current;
     
-    // Debounce: Ignore taps that are too fast (likely ghost events from touch+mouse)
-    // < 100ms indicates a duplicate event firing or inhumanly fast tapping
+    // Debounce
     if (times.length > 0 && now - times[times.length - 1] < 100) {
         return;
     }
@@ -182,7 +189,7 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
     }
     
     times.push(now);
-    // Keep last 5 taps for averaging
+    // Keep last 5 taps
     if (times.length > 5) times.shift(); 
     
     if (times.length > 1) {
@@ -193,7 +200,7 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
         const avg = sum / (times.length - 1);
         const measuredBpm = 60000 / avg;
         
-        // Update the BASE BPM so that effective BPM matches the tap speed
+        // Update the BASE BPM
         const baseBpm = measuredBpm / controls.playbackRate;
         controls.setBpm(baseBpm);
     }
@@ -205,8 +212,9 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   };
   
   // Calculate slider position percentage (0 to 100)
-  // Rate 1.5 (Fast) -> 0% (Top), Rate 0.5 (Slow) -> 100% (Bottom)
-  const sliderPercent = ((1.5 - controls.playbackRate) * 100);
+  // Updated Calculation for PITCH_RANGE
+  const sliderRangeSpan = PITCH_RANGE * 2;
+  const sliderPercent = (((1 + PITCH_RANGE) - controls.playbackRate) / sliderRangeSpan) * 100;
 
   const handlePitchReset = () => {
     controls.setPlaybackRate(1);
@@ -217,8 +225,7 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
     else controls.play();
   };
 
-  // Common button style for CUE, PLAY, TAP
-  // Updated sizes for better touch targets: w-16 (64px) min
+  // Common button style
   const buttonStyle = "w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-braun-panel border border-braun-border shadow-md active:shadow-inner active:bg-braun-surface transition-all flex items-center justify-center group";
 
   return (
