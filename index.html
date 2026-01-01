@@ -48,6 +48,8 @@
         overflow: hidden; /* Lock scroll */
         font-family: 'Inter', sans-serif;
         -webkit-font-smoothing: antialiased;
+        margin: 0;
+        padding: 0;
       }
       .no-select {
         user-select: none;
@@ -81,7 +83,8 @@
       #app-content {
         display: flex;
         width: 100vw;
-        height: 100vh;
+        height: 100vh; /* Fallback */
+        height: 100dvh; /* Mobile Modern Standard */
       }
 
       @media (orientation: portrait) {
@@ -123,5 +126,6 @@
       <p class="text-braun-muted text-sm">Landscape mode required</p>
     </div>
     <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
