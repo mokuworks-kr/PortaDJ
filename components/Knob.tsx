@@ -78,7 +78,7 @@ export const Knob: React.FC<KnobProps> = ({ value, onChange, label, min = 0, max
   return (
     <div className="flex flex-col items-center gap-1 lg:gap-2 w-full no-select touch-none group">
       <div
-        className="relative w-12 h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20 cursor-ns-resize"
+        className="relative w-10 h-10 lg:w-14 lg:h-14 xl:w-16 xl:h-16 cursor-ns-resize"
         onMouseDown={(e) => handleStart(e.clientY)}
         onTouchStart={handleTouchStart}
         onDoubleClick={handleReset}
@@ -92,10 +92,10 @@ export const Knob: React.FC<KnobProps> = ({ value, onChange, label, min = 0, max
           style={{ transform: `rotate(${rotation}deg)` }}
         >
           {/* The white marker line */}
-          <div className="w-0.5 lg:w-1 h-4 lg:h-6 xl:h-8 mx-auto mt-1 lg:mt-1.5 xl:mt-2 bg-braun-indicator rounded-full shadow-[0_0_2px_rgba(255,255,255,0.5)]" />
+          <div className="w-0.5 lg:w-1 h-3 lg:h-5 xl:h-6 mx-auto mt-1 lg:mt-1.5 xl:mt-2 bg-braun-indicator rounded-full shadow-[0_0_2px_rgba(255,255,255,0.5)]" />
         </div>
       </div>
-      <span className="text-[9px] lg:text-[11px] font-medium text-braun-muted uppercase tracking-widest">{label}</span>
+      <span className="text-[9px] lg:text-[11px] font-medium text-braun-muted uppercase tracking-widest pointer-events-none">{label}</span>
     </div>
   );
 };

@@ -9,6 +9,13 @@ interface DeckProps {
   color: string;
 }
 
+// Constants for Pitch Range (Reduced sensitivity)
+// +/- 16% (Standard "Wide" DJ Range) instead of previous 50%
+const PITCH_RANGE = 0.16;
+const MAX_RATE = 1 + PITCH_RANGE; // 1.16
+const MIN_RATE = 1 - PITCH_RANGE; // 0.84
+const RATE_SPAN = MAX_RATE - MIN_RATE; // 0.32
+
 export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -106,8 +113,9 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
     let normalized = relativeY / rect.height;
     normalized = Math.max(0, Math.min(1, normalized));
     
-    // Invert logic: Top (0) = Fast (1.5), Bottom (1) = Slow (0.5)
-    const newRate = 1.5 - normalized;
+    // Invert logic: Top (0) = Fast (+16%), Bottom (1) = Slow (-16%)
+    // Range: 0.84 to 1.16
+    const newRate = MAX_RATE - (normalized * RATE_SPAN);
     controls.setPlaybackRate(newRate);
   }, [controls]);
 
@@ -205,8 +213,10 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   };
   
   // Calculate slider position percentage (0 to 100)
-  // Rate 1.5 (Fast) -> 0% (Top), Rate 0.5 (Slow) -> 100% (Bottom)
-  const sliderPercent = ((1.5 - controls.playbackRate) * 100);
+  // Rate MAX (Fast) -> 0% (Top), Rate MIN (Slow) -> 100% (Bottom)
+  let sliderPercent = ((MAX_RATE - controls.playbackRate) / RATE_SPAN) * 100;
+  // Clamp for visual sanity
+  sliderPercent = Math.max(0, Math.min(100, sliderPercent));
 
   const handlePitchReset = () => {
     controls.setPlaybackRate(1);
@@ -218,7 +228,8 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   };
 
   // Common button style for CUE, PLAY, TAP
-  const buttonStyle = "w-14 h-14 lg:w-20 lg:h-20 rounded-full bg-braun-panel border border-braun-border shadow-md active:shadow-inner active:bg-braun-surface transition-all flex items-center justify-center group";
+  // Updated sizes for better touch targets: w-16 (64px) min
+  const buttonStyle = "w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-braun-panel border border-braun-border shadow-md active:shadow-inner active:bg-braun-surface transition-all flex items-center justify-center group";
 
   return (
     <div className="flex flex-col h-full w-full px-2 py-2 md:px-3 md:py-3 lg:px-4 lg:py-4 gap-2 lg:gap-4 bg-braun-bg overflow-hidden">
@@ -375,7 +386,8 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
       </div>
 
       {/* Bottom: Transport Controls - Fixed height to ensure visibility */}
-      <div className="h-[70px] md:h-[85px] lg:h-[100px] flex-shrink-0 flex items-center justify-center gap-6 lg:gap-10 pb-2">
+      {/* Gap reduced to 4, Height slightly adjusted to fit bigger buttons */}
+      <div className="h-[75px] md:h-[90px] lg:h-[110px] flex-shrink-0 flex items-center justify-center gap-4 lg:gap-8 pb-2">
         {/* CUE Button */}
         <div className="flex flex-col items-center gap-1">
           <button 

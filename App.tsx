@@ -107,7 +107,7 @@ const App: React.FC = () => {
     <div id="app-content" className="flex flex-row bg-braun-bg w-full h-full overflow-hidden select-none">
       
       {/* Left Column: Deck A */}
-      <div className="flex-1 h-full border-r border-braun-border">
+      <div className="flex-1 h-full">
         <Deck 
           id="A" 
           controls={deckAControls} 
@@ -116,53 +116,56 @@ const App: React.FC = () => {
       </div>
 
       {/* Middle Column: Mixer */}
-      <div className="w-[150px] md:w-[170px] lg:w-[240px] xl:w-[320px] h-full bg-braun-surface flex flex-col border-r border-braun-border relative z-20 shadow-xl transition-all duration-200">
-        
-        {/* Logo Area */}
-        <div className="h-[10%] min-h-[40px] lg:min-h-[50px] flex items-center justify-center border-b border-braun-border bg-braun-surface overflow-hidden">
-            <div className="text-braun-text font-black tracking-tighter text-2xl md:text-4xl lg:text-5xl w-full text-center leading-[0.8] scale-110 origin-center select-none">
-                PortaDJ
-            </div>
-        </div>
-
-        {/* Mixer Controls Section */}
-        <div className="flex-1 flex flex-row items-stretch justify-center relative min-h-0">
+      {/* Wrapped in a container with exact same vertical padding as Deck (py-2 md:py-3 lg:py-4) to ensure perfect vertical alignment */}
+      <div className="h-full py-2 md:py-3 lg:py-4 mx-1 z-20 flex flex-col">
+        <div className="w-[150px] md:w-[170px] lg:w-[240px] xl:w-[320px] h-full bg-braun-surface flex flex-col border border-braun-border rounded relative shadow-2xl transition-all duration-200 overflow-hidden">
             
-            {/* Column A Controls */}
-            <div className="flex-1 flex flex-col h-full py-2 lg:py-4 items-center border-r border-braun-border/50 bg-braun-surface">
-                {/* EQ Section - Updated for Vertical Centering */}
-                <div className="flex-1 flex flex-col justify-center gap-1 md:gap-4 lg:gap-8 w-full items-center">
-                  <Knob label="HI" value={eqA.high} onChange={(v) => handleEqChange('A', 'high', v)} />
-                  <Knob label="MID" value={eqA.mid} onChange={(v) => handleEqChange('A', 'mid', v)} />
-                  <Knob label="LO" value={eqA.low} onChange={(v) => handleEqChange('A', 'low', v)} />
-                </div>
-                {/* Volume Section */}
-                <div className="w-full px-2 lg:px-6 pt-2 lg:pt-4 border-t border-braun-border/50 flex justify-center shrink-0">
-                   <Knob label="VOL" value={volA} onChange={(v) => handleVolumeChange('A', v)} defaultValue={0.75} />
+            {/* Logo Area */}
+            <div className="h-[10%] min-h-[40px] lg:min-h-[50px] flex items-center justify-center border-b border-braun-border bg-braun-surface overflow-hidden shrink-0">
+                <div className="text-braun-text font-black tracking-tighter text-2xl md:text-4xl lg:text-5xl w-full text-center leading-[0.8] scale-110 origin-center select-none">
+                    PortaDJ
                 </div>
             </div>
 
-            {/* Column B Controls */}
-            <div className="flex-1 flex flex-col h-full py-2 lg:py-4 items-center bg-braun-surface">
-                {/* EQ Section - Updated for Vertical Centering */}
-                <div className="flex-1 flex flex-col justify-center gap-1 md:gap-4 lg:gap-8 w-full items-center">
-                  <Knob label="HI" value={eqB.high} onChange={(v) => handleEqChange('B', 'high', v)} />
-                  <Knob label="MID" value={eqB.mid} onChange={(v) => handleEqChange('B', 'mid', v)} />
-                  <Knob label="LO" value={eqB.low} onChange={(v) => handleEqChange('B', 'low', v)} />
+            {/* Mixer Controls Section */}
+            <div className="flex-1 flex flex-row items-stretch justify-center relative min-h-0 overflow-hidden">
+                
+                {/* Column A Controls */}
+                <div className="flex-1 flex flex-col h-full items-center border-r border-braun-border/50 bg-braun-surface overflow-hidden">
+                    {/* EQ Section */}
+                    <div className="flex-1 flex flex-col justify-center gap-1 md:gap-3 lg:gap-6 w-full items-center min-h-0 py-2 md:py-4">
+                      <Knob label="HI" value={eqA.high} onChange={(v) => handleEqChange('A', 'high', v)} />
+                      <Knob label="MID" value={eqA.mid} onChange={(v) => handleEqChange('A', 'mid', v)} />
+                      <Knob label="LO" value={eqA.low} onChange={(v) => handleEqChange('A', 'low', v)} />
+                    </div>
+                    {/* Volume Section */}
+                    <div className="w-full py-2 md:py-4 border-t border-braun-border/50 flex justify-center shrink-0">
+                      <Knob label="VOL" value={volA} onChange={(v) => handleVolumeChange('A', v)} defaultValue={0.75} />
+                    </div>
                 </div>
-                {/* Volume Section */}
-                 <div className="w-full px-2 lg:px-6 pt-2 lg:pt-4 border-t border-braun-border/50 flex justify-center shrink-0">
-                   <Knob label="VOL" value={volB} onChange={(v) => handleVolumeChange('B', v)} defaultValue={0.75} />
+
+                {/* Column B Controls */}
+                <div className="flex-1 flex flex-col h-full items-center bg-braun-surface overflow-hidden">
+                    {/* EQ Section */}
+                    <div className="flex-1 flex flex-col justify-center gap-1 md:gap-3 lg:gap-6 w-full items-center min-h-0 py-2 md:py-4">
+                      <Knob label="HI" value={eqB.high} onChange={(v) => handleEqChange('B', 'high', v)} />
+                      <Knob label="MID" value={eqB.mid} onChange={(v) => handleEqChange('B', 'mid', v)} />
+                      <Knob label="LO" value={eqB.low} onChange={(v) => handleEqChange('B', 'low', v)} />
+                    </div>
+                    {/* Volume Section */}
+                    <div className="w-full py-2 md:py-4 border-t border-braun-border/50 flex justify-center shrink-0">
+                      <Knob label="VOL" value={volB} onChange={(v) => handleVolumeChange('B', v)} defaultValue={0.75} />
+                    </div>
                 </div>
+
+            </div>
+
+            {/* Crossfader Section */}
+            <div className="h-[70px] lg:h-[120px] flex-shrink-0 flex items-center px-4 lg:px-8 border-t border-braun-border bg-braun-panel">
+                <Crossfader value={crossfaderValue} onChange={updateCrossfader} />
             </div>
 
         </div>
-
-        {/* Crossfader Section - Reduced height on mobile to free up space */}
-        <div className="h-[70px] lg:h-[120px] flex-shrink-0 flex items-center px-4 lg:px-8 border-t border-braun-border bg-braun-panel">
-             <Crossfader value={crossfaderValue} onChange={updateCrossfader} />
-        </div>
-
       </div>
 
       {/* Right Column: Deck B */}
