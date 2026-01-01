@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>PocketDJ</title>
+    
+    <!-- Google Fonts: Inter & Material Symbols Rounded -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              // Rams / Industrial Palette
+              braun: {
+                bg: '#111111',       // Main Background (Very Dark Grey)
+                surface: '#1c1c1c',  // Panel Background
+                panel: '#2a2a2a',    // Elevated Surface
+                border: '#333333',   // Subtle Borders
+                text: '#f2f2f2',     // Primary Text (Off-White)
+                muted: '#888888',    // Secondary Text
+                accent: '#ea580c',   // Orange (Action/Attention)
+                indicator: '#ffffff' // Pure White Indicators
+              },
+              deckA: '#84cc16', // Lime 500
+              deckB: '#f97316', // Orange 500
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Prevent scrolling when interacting with faders/knobs */
+      body {
+        overscroll-behavior: none;
+        background-color: #111111;
+        color: #f2f2f2;
+        overflow: hidden; /* Lock scroll */
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .no-select {
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      
+      /* Material Symbols Adjustment */
+      .material-symbols-rounded {
+        font-variation-settings:
+          'FILL' 1,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+        line-height: 1;
+      }
+
+      /* Texture for Jog Wheel */
+      .vinyl-groove {
+        background: repeating-radial-gradient(
+          #2a2a2a,
+          #2a2a2a 2px,
+          #1f1f1f 3px,
+          #1f1f1f 4px
+        );
+      }
+
+      /* Landscape enforcement logic */
+      #portrait-warning {
+        display: none;
+      }
+      #app-content {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      @media (orientation: portrait) {
+        #portrait-warning {
+          display: flex;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 9999;
+          background-color: #111111;
+          color: white;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          text-align: center;
+          padding: 20px;
+        }
+        #app-content {
+          display: none;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="portrait-warning">
+      <h1 class="text-xl font-medium mb-2 tracking-tight">ROTATE DEVICE</h1>
+      <p class="text-braun-muted text-sm">Landscape mode required</p>
+    </div>
+    <div id="root"></div>
+  </body>
+</html>

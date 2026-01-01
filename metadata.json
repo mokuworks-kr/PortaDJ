@@ -1,0 +1,5 @@
+{
+  "name": "PortaDJ",
+  "description": "A minimal, mobile-first DJ mixer with dual decks, waveform visualization, 3-band EQ, and crossfader.",
+  "requestFramePermissions": []
+}
