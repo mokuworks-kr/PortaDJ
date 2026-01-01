@@ -163,12 +163,18 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   const handleTap = (e: React.SyntheticEvent) => {
     e.preventDefault();
     
+    const now = Date.now();
+    const times = tapTimesRef.current;
+    
+    // Debounce: Ignore taps that are too fast (likely ghost events from touch+mouse)
+    // < 100ms indicates a duplicate event firing or inhumanly fast tapping
+    if (times.length > 0 && now - times[times.length - 1] < 100) {
+        return;
+    }
+
     // Trigger Flash
     setIsBpmFlashing(true);
     setTimeout(() => setIsBpmFlashing(false), 25);
-
-    const now = Date.now();
-    const times = tapTimesRef.current;
     
     // Reset if too long has passed (2 seconds)
     if (times.length > 0 && now - times[times.length - 1] > 2000) {
