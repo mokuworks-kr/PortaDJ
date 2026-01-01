@@ -116,13 +116,13 @@ const App: React.FC = () => {
       </div>
 
       {/* Middle Column: Mixer */}
-      {/* Wrapped in a container with exact same vertical padding as Deck (py-2 md:py-3 lg:py-4) to ensure perfect vertical alignment */}
-      <div className="h-full py-2 md:py-3 lg:py-4 mx-1 z-20 flex flex-col">
+      {/* Reduced vertical padding (py-1) for small screens to maximize space */}
+      <div className="h-full py-1 md:py-3 lg:py-4 mx-1 z-20 flex flex-col">
         <div className="w-[150px] md:w-[170px] lg:w-[240px] xl:w-[320px] h-full bg-braun-surface flex flex-col border border-braun-border rounded relative shadow-2xl transition-all duration-200 overflow-hidden">
             
-            {/* Logo Area */}
-            <div className="h-[10%] min-h-[40px] lg:min-h-[50px] flex items-center justify-center border-b border-braun-border bg-braun-surface overflow-hidden shrink-0">
-                <div className="text-braun-text font-black tracking-tighter text-2xl md:text-4xl lg:text-5xl w-full text-center leading-[0.8] scale-110 origin-center select-none">
+            {/* Logo Area - Reduced height for small screens */}
+            <div className="h-[30px] md:h-[10%] min-h-[30px] lg:min-h-[50px] flex items-center justify-center border-b border-braun-border bg-braun-surface overflow-hidden shrink-0">
+                <div className="text-braun-text font-black tracking-tighter text-lg md:text-4xl lg:text-5xl w-full text-center leading-[0.8] scale-110 origin-center select-none">
                     PortaDJ
                 </div>
             </div>
@@ -132,14 +132,14 @@ const App: React.FC = () => {
                 
                 {/* Column A Controls */}
                 <div className="flex-1 flex flex-col h-full items-center border-r border-braun-border/50 bg-braun-surface overflow-hidden">
-                    {/* EQ Section */}
-                    <div className="flex-1 flex flex-col justify-center gap-1 md:gap-3 lg:gap-6 w-full items-center min-h-0 py-2 md:py-4">
+                    {/* EQ Section - Using justify-evenly and tighter padding */}
+                    <div className="flex-1 flex flex-col justify-evenly w-full items-center min-h-0 py-1 md:py-4">
                       <Knob label="HI" value={eqA.high} onChange={(v) => handleEqChange('A', 'high', v)} />
                       <Knob label="MID" value={eqA.mid} onChange={(v) => handleEqChange('A', 'mid', v)} />
                       <Knob label="LO" value={eqA.low} onChange={(v) => handleEqChange('A', 'low', v)} />
                     </div>
-                    {/* Volume Section */}
-                    <div className="w-full py-2 md:py-4 border-t border-braun-border/50 flex justify-center shrink-0">
+                    {/* Volume Section - Compact padding */}
+                    <div className="w-full py-1 md:py-4 border-t border-braun-border/50 flex justify-center shrink-0">
                       <Knob label="VOL" value={volA} onChange={(v) => handleVolumeChange('A', v)} defaultValue={0.75} />
                     </div>
                 </div>
@@ -147,21 +147,21 @@ const App: React.FC = () => {
                 {/* Column B Controls */}
                 <div className="flex-1 flex flex-col h-full items-center bg-braun-surface overflow-hidden">
                     {/* EQ Section */}
-                    <div className="flex-1 flex flex-col justify-center gap-1 md:gap-3 lg:gap-6 w-full items-center min-h-0 py-2 md:py-4">
+                    <div className="flex-1 flex flex-col justify-evenly w-full items-center min-h-0 py-1 md:py-4">
                       <Knob label="HI" value={eqB.high} onChange={(v) => handleEqChange('B', 'high', v)} />
                       <Knob label="MID" value={eqB.mid} onChange={(v) => handleEqChange('B', 'mid', v)} />
                       <Knob label="LO" value={eqB.low} onChange={(v) => handleEqChange('B', 'low', v)} />
                     </div>
                     {/* Volume Section */}
-                    <div className="w-full py-2 md:py-4 border-t border-braun-border/50 flex justify-center shrink-0">
+                    <div className="w-full py-1 md:py-4 border-t border-braun-border/50 flex justify-center shrink-0">
                       <Knob label="VOL" value={volB} onChange={(v) => handleVolumeChange('B', v)} defaultValue={0.75} />
                     </div>
                 </div>
 
             </div>
 
-            {/* Crossfader Section */}
-            <div className="h-[70px] lg:h-[120px] flex-shrink-0 flex items-center px-4 lg:px-8 border-t border-braun-border bg-braun-panel">
+            {/* Crossfader Section - Compact height for small screens */}
+            <div className="h-[50px] md:h-[70px] lg:h-[120px] flex-shrink-0 flex items-center px-4 lg:px-8 border-t border-braun-border bg-braun-panel">
                 <Crossfader value={crossfaderValue} onChange={updateCrossfader} />
             </div>
 

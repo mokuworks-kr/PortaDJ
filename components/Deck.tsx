@@ -232,10 +232,10 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   const buttonStyle = "w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-braun-panel border border-braun-border shadow-md active:shadow-inner active:bg-braun-surface transition-all flex items-center justify-center group";
 
   return (
-    <div className="flex flex-col h-full w-full px-2 py-2 md:px-3 md:py-3 lg:px-4 lg:py-4 gap-2 lg:gap-4 bg-braun-bg overflow-hidden">
+    <div className="flex flex-col h-full w-full px-1 py-1 md:px-3 md:py-3 lg:px-4 lg:py-4 gap-1 lg:gap-4 bg-braun-bg overflow-hidden">
       
       {/* Top: Display Area (Inset look) */}
-      <div className="h-[20%] md:h-[18%] lg:h-[20%] min-h-[70px] md:min-h-[85px] lg:min-h-[100px] flex-shrink-0 w-full bg-black rounded border border-braun-border shadow-inner p-2 lg:p-3 flex flex-col relative overflow-hidden">
+      <div className="h-[18%] md:h-[18%] lg:h-[20%] min-h-[50px] lg:min-h-[100px] flex-shrink-0 w-full bg-black rounded border border-braun-border shadow-inner p-2 lg:p-3 flex flex-col relative overflow-hidden">
         <div className="flex justify-between items-start w-full z-10 mb-1">
              <div className="flex flex-col">
                 <span className="text-[9px] lg:text-[11px] tracking-widest text-braun-muted font-medium uppercase">TRACK</span>
@@ -278,7 +278,7 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
 
       {/* Middle: Jog Wheel & Pitch Wrapper */}
       {/* Wrapper to center controls and prevent them from splitting too far on desktop */}
-      <div className="flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden py-1">
+      <div className="flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden py-0.5">
         <div className="flex flex-row items-stretch justify-center w-full max-w-[400px] md:max-w-[500px] xl:max-w-[600px] gap-2 md:gap-4 lg:gap-6 h-full">
             
             {/* Jog Wheel Container - Fixed Aspect Ratio */}
@@ -385,9 +385,9 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
         </div>
       </div>
 
-      {/* Bottom: Transport Controls - Fixed height to ensure visibility */}
-      {/* Gap reduced to 4, Height slightly adjusted to fit bigger buttons */}
-      <div className="h-[75px] md:h-[90px] lg:h-[110px] flex-shrink-0 flex items-center justify-center gap-4 lg:gap-8 pb-2">
+      {/* Bottom: Transport Controls - Compact for SE3 */}
+      {/* Reduced Height, removed bottom padding (pb-0) for balance */}
+      <div className="h-[60px] md:h-[90px] lg:h-[110px] flex-shrink-0 flex items-center justify-center gap-4 lg:gap-8 pb-0">
         {/* CUE Button */}
         <div className="flex flex-col items-center gap-1">
           <button 
