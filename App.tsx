@@ -27,6 +27,39 @@ const App: React.FC = () => {
   // Constant for Gain Scaling
   const GAIN_SCALER = 1 / 0.75;
 
+  // Force Landscape Mode Logic
+  useEffect(() => {
+    const lockOrientation = async () => {
+      // Attempt to lock screen orientation to landscape
+      try {
+        if (screen.orientation && 'lock' in screen.orientation) {
+           await (screen.orientation as any).lock('landscape');
+        } else if ((window as any).screen && (window as any).screen.lockOrientation) {
+           (window as any).screen.lockOrientation('landscape');
+        }
+      } catch (e) {
+        // Silently fail if not supported or denied
+      }
+    };
+
+    lockOrientation();
+
+    // Re-attempt on interaction (needed for some mobile browsers)
+    const handleInteraction = () => {
+        lockOrientation();
+        document.removeEventListener('click', handleInteraction);
+        document.removeEventListener('touchstart', handleInteraction);
+    };
+
+    document.addEventListener('click', handleInteraction);
+    document.addEventListener('touchstart', handleInteraction);
+
+    return () => {
+        document.removeEventListener('click', handleInteraction);
+        document.removeEventListener('touchstart', handleInteraction);
+    };
+  }, []);
+
   useEffect(() => {
      const nodeA = deckAControls.getGainNode();
      if (nodeA && engine) {

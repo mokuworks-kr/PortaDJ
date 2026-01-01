@@ -10,11 +10,11 @@ interface DeckProps {
 }
 
 // Constants for Pitch Range (Reduced sensitivity)
-// +/- 16% (Standard "Wide" DJ Range) instead of previous 50%
-const PITCH_RANGE = 0.16;
-const MAX_RATE = 1 + PITCH_RANGE; // 1.16
-const MIN_RATE = 1 - PITCH_RANGE; // 0.84
-const RATE_SPAN = MAX_RATE - MIN_RATE; // 0.32
+// +/- 8% (Standard Technics 1200 Range) for finer control
+const PITCH_RANGE = 0.08;
+const MAX_RATE = 1 + PITCH_RANGE; // 1.08
+const MIN_RATE = 1 - PITCH_RANGE; // 0.92
+const RATE_SPAN = MAX_RATE - MIN_RATE; // 0.16
 
 export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -113,8 +113,8 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
     let normalized = relativeY / rect.height;
     normalized = Math.max(0, Math.min(1, normalized));
     
-    // Invert logic: Top (0) = Fast (+16%), Bottom (1) = Slow (-16%)
-    // Range: 0.84 to 1.16
+    // Invert logic: Top (0) = Fast (+8%), Bottom (1) = Slow (-8%)
+    // Range: 0.92 to 1.08
     const newRate = MAX_RATE - (normalized * RATE_SPAN);
     controls.setPlaybackRate(newRate);
   }, [controls]);
@@ -283,19 +283,14 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
             
             {/* Jog Wheel Container - Fixed Aspect Ratio */}
             <div className="flex-1 h-full flex items-center justify-center relative touch-none min-w-0">
-               <div className="relative max-w-full max-h-full aspect-square flex items-center justify-center">
-                  {/* Layout Strut: Forces square aspect ratio within constraints */}
-                  <svg 
-                    viewBox="0 0 100 100" 
-                    className="max-w-full max-h-full block opacity-0 pointer-events-none"
-                    style={{ width: '1000px', height: '1000px' }} 
-                    aria-hidden="true"
-                  >
-                    <rect width="100" height="100" />
-                  </svg>
-                  
-                  {/* Actual Interactive Disc */}
-                  <div className="absolute inset-0 p-1">
+               {/* 
+                  Enforce strictly square aspect ratio based on available height/width.
+                  h-full ensures it tries to fill height (usually the constraint in landscape).
+                  w-auto allows width to shrink/grow based on aspect-square.
+                  max-w-full ensures it doesn't overflow width.
+               */}
+               <div className="relative h-[90%] w-auto aspect-square max-w-full max-h-full flex items-center justify-center">
+                  <div className="w-full h-full p-1">
                       <div 
                           ref={lpRef}
                           className="w-full h-full rounded-full border border-braun-border shadow-2xl relative cursor-grab active:cursor-grabbing bg-braun-surface"
