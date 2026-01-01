@@ -9,13 +9,6 @@ interface DeckProps {
   color: string;
 }
 
-// Constants for Pitch Range (Reduced sensitivity)
-// +/- 8% (Standard Technics 1200 Range) for finer control
-const PITCH_RANGE = 0.08;
-const MAX_RATE = 1 + PITCH_RANGE; // 1.08
-const MIN_RATE = 1 - PITCH_RANGE; // 0.92
-const RATE_SPAN = MAX_RATE - MIN_RATE; // 0.16
-
 export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -113,9 +106,8 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
     let normalized = relativeY / rect.height;
     normalized = Math.max(0, Math.min(1, normalized));
     
-    // Invert logic: Top (0) = Fast (+8%), Bottom (1) = Slow (-8%)
-    // Range: 0.92 to 1.08
-    const newRate = MAX_RATE - (normalized * RATE_SPAN);
+    // Invert logic: Top (0) = Fast (1.5), Bottom (1) = Slow (0.5)
+    const newRate = 1.5 - normalized;
     controls.setPlaybackRate(newRate);
   }, [controls]);
 
@@ -213,10 +205,8 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   };
   
   // Calculate slider position percentage (0 to 100)
-  // Rate MAX (Fast) -> 0% (Top), Rate MIN (Slow) -> 100% (Bottom)
-  let sliderPercent = ((MAX_RATE - controls.playbackRate) / RATE_SPAN) * 100;
-  // Clamp for visual sanity
-  sliderPercent = Math.max(0, Math.min(100, sliderPercent));
+  // Rate 1.5 (Fast) -> 0% (Top), Rate 0.5 (Slow) -> 100% (Bottom)
+  const sliderPercent = ((1.5 - controls.playbackRate) * 100);
 
   const handlePitchReset = () => {
     controls.setPlaybackRate(1);
@@ -232,10 +222,10 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
   const buttonStyle = "w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full bg-braun-panel border border-braun-border shadow-md active:shadow-inner active:bg-braun-surface transition-all flex items-center justify-center group";
 
   return (
-    <div className="flex flex-col h-full w-full px-1 py-1 md:px-3 md:py-3 lg:px-4 lg:py-4 gap-1 lg:gap-4 bg-braun-bg overflow-hidden">
+    <div className="flex flex-col h-full w-full px-2 py-2 md:px-3 md:py-3 lg:px-4 lg:py-4 gap-2 lg:gap-4 bg-braun-bg overflow-hidden">
       
       {/* Top: Display Area (Inset look) */}
-      <div className="h-[18%] md:h-[18%] lg:h-[20%] min-h-[50px] lg:min-h-[100px] flex-shrink-0 w-full bg-black rounded border border-braun-border shadow-inner p-2 lg:p-3 flex flex-col relative overflow-hidden">
+      <div className="h-[20%] md:h-[18%] lg:h-[20%] min-h-[70px] md:min-h-[85px] lg:min-h-[100px] flex-shrink-0 w-full bg-black rounded border border-braun-border shadow-inner p-2 lg:p-3 flex flex-col relative overflow-hidden">
         <div className="flex justify-between items-start w-full z-10 mb-1">
              <div className="flex flex-col">
                 <span className="text-[9px] lg:text-[11px] tracking-widest text-braun-muted font-medium uppercase">TRACK</span>
@@ -278,19 +268,24 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
 
       {/* Middle: Jog Wheel & Pitch Wrapper */}
       {/* Wrapper to center controls and prevent them from splitting too far on desktop */}
-      <div className="flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden py-0.5">
+      <div className="flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden py-1">
         <div className="flex flex-row items-stretch justify-center w-full max-w-[400px] md:max-w-[500px] xl:max-w-[600px] gap-2 md:gap-4 lg:gap-6 h-full">
             
             {/* Jog Wheel Container - Fixed Aspect Ratio */}
             <div className="flex-1 h-full flex items-center justify-center relative touch-none min-w-0">
-               {/* 
-                  Enforce strictly square aspect ratio based on available height/width.
-                  h-full ensures it tries to fill height (usually the constraint in landscape).
-                  w-auto allows width to shrink/grow based on aspect-square.
-                  max-w-full ensures it doesn't overflow width.
-               */}
-               <div className="relative h-[90%] w-auto aspect-square max-w-full max-h-full flex items-center justify-center">
-                  <div className="w-full h-full p-1">
+               <div className="relative max-w-full max-h-full aspect-square flex items-center justify-center">
+                  {/* Layout Strut: Forces square aspect ratio within constraints */}
+                  <svg 
+                    viewBox="0 0 100 100" 
+                    className="max-w-full max-h-full block opacity-0 pointer-events-none"
+                    style={{ width: '1000px', height: '1000px' }} 
+                    aria-hidden="true"
+                  >
+                    <rect width="100" height="100" />
+                  </svg>
+                  
+                  {/* Actual Interactive Disc */}
+                  <div className="absolute inset-0 p-1">
                       <div 
                           ref={lpRef}
                           className="w-full h-full rounded-full border border-braun-border shadow-2xl relative cursor-grab active:cursor-grabbing bg-braun-surface"
@@ -380,9 +375,9 @@ export const Deck: React.FC<DeckProps> = ({ id, controls, color }) => {
         </div>
       </div>
 
-      {/* Bottom: Transport Controls - Compact for SE3 */}
-      {/* Reduced Height, removed bottom padding (pb-0) for balance */}
-      <div className="h-[60px] md:h-[90px] lg:h-[110px] flex-shrink-0 flex items-center justify-center gap-4 lg:gap-8 pb-0">
+      {/* Bottom: Transport Controls - Fixed height to ensure visibility */}
+      {/* Gap reduced to 4, Height slightly adjusted to fit bigger buttons */}
+      <div className="h-[75px] md:h-[90px] lg:h-[110px] flex-shrink-0 flex items-center justify-center gap-4 lg:gap-8 pb-2">
         {/* CUE Button */}
         <div className="flex flex-col items-center gap-1">
           <button 
